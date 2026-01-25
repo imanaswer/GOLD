@@ -1,0 +1,117 @@
+
+[94m================================================================================[0m
+[94mGOLD LEDGER MODULE TEST SUITE - MODULE 1/10[0m
+[94mTesting: Gold Ledger (Party Gold Balance System)[0m
+[94m================================================================================[0m
+
+[94mℹ Logging in as admin...[0m
+[92m✓ Login successful. Token: eyJhbGciOiJIUzI1NiIs...[0m
+[94mℹ Creating test party...[0m
+[92m✓ Party created: Gold Test Party 20260125074624 (ID: 86642860-83bb-42fd-81a4-dd9d930c881d)[0m
+
+[94m================================================================================[0m
+[94mTEST 1: Create IN Entry (Party Gives Gold to Shop)[0m
+[94m================================================================================[0m
+[94mℹ Creating IN entry (party gives gold to shop)...[0m
+[92m✓ IN entry created successfully[0m
+[94mℹ   Entry ID: ed7a84c2-3ecb-42da-927c-857bddcabccf[0m
+[94mℹ   Weight: 125.456 grams (should be rounded to 3 decimals)[0m
+[94mℹ   Type: IN[0m
+[94mℹ   Purpose: advance_gold[0m
+[92m✓ ✓ Weight precision is correct (3 decimals)[0m
+[92m✓ TEST PASSED: Create IN Entry (Party Gives Gold to Shop)[0m
+
+[94m================================================================================[0m
+[94mTEST 2: Create OUT Entry (Shop Gives Gold to Party)[0m
+[94m================================================================================[0m
+[94mℹ Creating OUT entry (shop gives gold to party)...[0m
+[92m✓ OUT entry created successfully[0m
+[94mℹ   Entry ID: ef596738-0a66-458b-baaf-ad63d24c5ba6[0m
+[94mℹ   Weight: 50.123 grams[0m
+[94mℹ   Type: OUT[0m
+[94mℹ   Purpose: job_work[0m
+[92m✓ ✓ Weight precision is correct (3 decimals)[0m
+[92m✓ TEST PASSED: Create OUT Entry (Shop Gives Gold to Party)[0m
+
+[94m================================================================================[0m
+[94mTEST 3: Get All Gold Ledger Entries[0m
+[94m================================================================================[0m
+[94mℹ Getting all gold ledger entries...[0m
+[92m✓ Retrieved 553 gold ledger entries[0m
+[94mℹ   Entry 1: OUT - 50.123g - job_work[0m
+[94mℹ   Entry 2: IN - 125.456g - advance_gold[0m
+[94mℹ   Entry 3: OUT - 50.15g - job_work[0m
+[94mℹ   Entry 4: IN - 119.873g - advance_gold[0m
+[94mℹ   Entry 5: OUT - 50.887g - job_work[0m
+[92m✓ TEST PASSED: Get All Gold Ledger Entries[0m
+
+[94m================================================================================[0m
+[94mTEST 4: Filter Entries by Party ID[0m
+[94m================================================================================[0m
+[94mℹ Getting gold ledger entries for party 86642860...[0m
+[92m✓ Retrieved 2 entries for this party[0m
+[92m✓ ✓ All entries belong to the correct party[0m
+[92m✓ TEST PASSED: Filter Entries by Party ID[0m
+
+[94m================================================================================[0m
+[94mTEST 5: Filter Entries by Date Range[0m
+[94m================================================================================[0m
+[94mℹ Getting gold ledger entries for today...[0m
+[92m✓ Retrieved 553 entries from 2026-01-25[0m
+[92m✓ TEST PASSED: Filter Entries by Date Range[0m
+
+[94m================================================================================[0m
+[94mTEST 6: Get Party Gold Summary with Balance Calculation[0m
+[94m================================================================================[0m
+[94mℹ Getting gold summary for party 86642860...[0m
+[92m✓ Gold summary retrieved successfully[0m
+[94mℹ   Party: Gold Test Party 20260125074624[0m
+[94mℹ   Gold Due FROM Party (party owes shop): 125.456 grams[0m
+[94mℹ   Gold Due TO Party (shop owes party): 50.123 grams[0m
+[94mℹ   Net Gold Balance: 75.333 grams[0m
+[94mℹ   Total Entries: 2[0m
+[92m✓ ✓ Gold due from party is correct: 125.456g[0m
+[92m✓ ✓ Gold due to party is correct: 50.123g[0m
+[92m✓ ✓ Net gold balance is correct: 75.333g[0m
+[92m✓ TEST PASSED: Get Party Gold Summary with Balance Calculation[0m
+
+[94m================================================================================[0m
+[94mTEST 7: Soft Delete Gold Ledger Entry[0m
+[94m================================================================================[0m
+[94mℹ Deleting gold ledger entry ed7a84c2...[0m
+[92m✓ Entry deleted successfully (soft delete)[0m
+[92m✓ ✓ Deleted entry does not appear in listing (soft delete working)[0m
+[92m✓ TEST PASSED: Soft Delete Gold Ledger Entry[0m
+
+[94m================================================================================[0m
+[94mTEST 8: Validation: Reject Invalid Type[0m
+[94m================================================================================[0m
+[94mℹ Testing validation: invalid type...[0m
+[92m✓ ✓ Validation working: invalid type rejected[0m
+[92m✓ TEST PASSED: Validation: Reject Invalid Type[0m
+
+[94m================================================================================[0m
+[94mTEST 9: Validation: Reject Invalid Purpose[0m
+[94m================================================================================[0m
+[94mℹ Testing validation: invalid purpose...[0m
+[92m✓ ✓ Validation working: invalid purpose rejected[0m
+[92m✓ TEST PASSED: Validation: Reject Invalid Purpose[0m
+
+[94m================================================================================[0m
+[94mTEST 10: Validation: Reject Non-existent Party[0m
+[94m================================================================================[0m
+[94mℹ Testing validation: non-existent party...[0m
+[92m✓ ✓ Validation working: non-existent party rejected[0m
+[92m✓ TEST PASSED: Validation: Reject Non-existent Party[0m
+
+[94m================================================================================[0m
+[94mTEST SUMMARY[0m
+[94m================================================================================[0m
+Total Tests: 10
+[92mPassed: 10[0m
+[91mFailed: 0[0m
+Success Rate: 100.0%
+
+[92m================================================================================[0m
+[92m🎉 ALL TESTS PASSED! GOLD LEDGER MODULE IS WORKING PERFECTLY! 🎉[0m
+[92m================================================================================[0m
