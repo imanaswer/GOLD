@@ -4075,7 +4075,7 @@ async def delete_jobcard(jobcard_id: str, current_user: User = Depends(require_p
     await create_audit_log(current_user.id, current_user.full_name, "jobcard", jobcard_id, "delete")
     return {"message": "Job card deleted successfully"}
 
-@api_router.get("/jobcards/{jobcard_id}/impact")
+@api_router.post("/jobcards/{jobcard_id}/impact")
 async def get_jobcard_impact(jobcard_id: str, current_user: User = Depends(require_permission('jobcards.view'))):
     """
     Get impact summary for job card actions (status changes or deletion).
