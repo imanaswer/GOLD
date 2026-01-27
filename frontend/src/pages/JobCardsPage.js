@@ -618,7 +618,7 @@ export default function JobCardsPage() {
         work_type: 'polish',
         remarks: '',
         making_charge_type: 'flat',
-        making_charge_value: 0,
+        making_charge_value: '',
         vat_percent: 5
       }]
     });
@@ -640,7 +640,7 @@ export default function JobCardsPage() {
         work_type: 'polish',
         remarks: '',
         making_charge_type: 'flat',
-        making_charge_value: 0,
+        making_charge_value: '',
         vat_percent: 5
       }]
     });
