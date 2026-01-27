@@ -1,119 +1,106 @@
+# Gold Inventory Management System
 
-# Project Setup & Run Instructions
+A full-stack Gold Inventory Management System built using FastAPI, React, and MongoDB.
 
-This project consists of two parts:
+---
 
-- Backend – Python (FastAPI)
-- Frontend – React (Node.js)
+## Tech Stack
 
-Follow the steps below to run the project locally.
+### Backend
+- Python 3.9+
+- FastAPI
+- Motor (MongoDB async driver)
+- JWT Authentication
+- Uvicorn
+
+### Frontend
+- React
+- Node.js (v16+)
+- npm
+- jsPDF
+- jspdf-autotable
+
+### Database
+- MongoDB Community Edition 8.2.3
+- Standalone (Local)
+
+---
+
+## Project Structure
+
+Gold_Inventory/
+├── backend/
+│   ├── server.py
+│   ├── init_db.py
+│   ├── requirements.txt
+│   ├── .env
+│   └── venv/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+└── README.md
 
 ---
 
 ## Prerequisites
 
-Ensure the following are installed on your system:
-
 - Python 3.9+
-- Node.js (v16+)
+- Node.js v16+
 - npm
+- MongoDB 8.2.3 Community Edition
 - Git (optional)
 
 ---
 
-## Backend Setup (FastAPI)
+## Database Setup (MongoDB) — REQUIRED
 
-### Step 1: Navigate to Backend Directory
-```
-cd backend
-```
-
-### Step 2: Create Virtual Environment
-```
-python -m venv venv
-```
-
-### Step 3: Activate Virtual Environment
-
-**Windows**
-```
-.\venv\Scripts\activate
-```
-
-**Linux / macOS**
-```
-source venv/bin/activate
-```
-
-### Step 4: Install Dependencies
-```
-pip install -r requirements.txt
-```
-
-If any packages are missing, install them manually:
-```
-pip install motor bleach fastapi slowapi python-dotenv uvicorn passlib httpx
-pip install bcrypt==4.2.0
-pip install openpyxl
-pip install PyJWT==2.10.1
-pip install reportlab
-```
-
-### Step 5: Initialize Database
-```
-python init_db.py
-```
-
-### Step 6: Run Backend Server
-```
-uvicorn server:app --host 0.0.0.0 --port 8001 --reload
-```
-
-Backend will run at:
-http://localhost:8001
+- Edition: MongoDB Community
+- Version: 8.2.3
+- Host: localhost
+- Port: 27017
+- Cluster: Standalone
 
 ---
 
-## Frontend Setup (React)
+## Backend Setup
 
-### Step 1: Navigate to Frontend Directory
-```
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+python init_db.py
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+
+---
+
+## Frontend Setup
+
 cd frontend
-```
-
-### Step 2: Install Dependencies
-```
 npm install
 npm install jspdf jspdf-autotable
-
-```
-
-### Step 3: Start Frontend Server
-```
 npm start
-```
-
-Frontend will run at:
-http://localhost:3000
 
 ---
 
-## Running Summary
+## Running URLs
 
-| Service   | URL |
-|----------|-----|
-| Backend  | http://localhost:8001 |
-| Frontend | http://localhost:3000 |
-
----
-
-## Notes
-
-- Start backend before frontend
-- Keep virtual environment activated
-- Update .env files if required
-- Stop servers using Ctrl + C
+Backend: http://localhost:8001  
+Frontend: http://localhost:3000  
+MongoDB: mongodb://localhost:27017
 
 ---
+
+# File path for frontend .env file - \GOLD-main\GOLD-main\frontend\.env
+REACT_APP_BACKEND_URL=http://localhost:8001
+
+# File path for backend .env file - \GOLD-main\GOLD-main\backend\.env
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="gold_shop_erp"
+CORS_ORIGINS=http://localhost:3000 
+JWT_SECRET="gs-erp-2025-prod-secret-key-a8f3e9c2b7d4f1a6e9b3c8d2f7a4e1b9c6d3f8a2e7b4c9d6f1a8e3b7c2d9f4a6"
+# REACT_APP_BACKEND_URL=http://192.168.1.21:5000
 
 Happy Coding 🚀
