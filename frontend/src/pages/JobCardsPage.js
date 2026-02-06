@@ -575,9 +575,9 @@ export default function JobCardsPage() {
       const impactRes = await API.get(`/api/jobcards/${jobcardId}/deliver-impact`);
       const impact = impactRes.data;
       
-      // Check if invoice exists before allowing delivery
-      if (impact.invoice_required || !impact.has_invoice) {
-        toast.error('Please convert this job card to an invoice before delivery.');
+      // FIX: Check can_proceed from backend (includes payment validation)
+      if (!impact.can_proceed) {
+        toast.error(impact.blocking_reason || 'Cannot deliver this job card at this time.');
         return;
       }
       
@@ -585,7 +585,7 @@ export default function JobCardsPage() {
         open: true,
         type: 'status_change',
         title: 'Deliver Job Card',
-        description: `Mark job card ${jobcardNumber} as delivered? This will finalize the job card and the customer has received their items.`,
+        description: `Mark job card ${jobcardNumber} as delivered? This will finalize the job card and confirm the customer has received their items.`,
         impact: impact,
         action: async () => {
           try {
