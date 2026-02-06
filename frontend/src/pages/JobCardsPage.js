@@ -799,16 +799,35 @@ export default function JobCardsPage() {
                           </Button>
                         )}
                         
-                        {/* Deliver button - only for completed job cards that have been invoiced */}
-                        {jc.status === 'completed' && !jc.locked && jc.is_invoiced && (() => {
+                        {/* Deliver button - FIX: Show for completed job cards with invoice, blocked if payment incomplete */}
+                        {jc.status === 'completed' && !jc.locked && (() => {
                           const invoice = invoicesMap[jc.id];
+                          const hasInvoice = invoice !== undefined;
                           const isFullyPaid = invoice && invoice.payment_status === 'paid' && invoice.balance_due === 0;
-                          const isBlocked = !isFullyPaid;
+                          const canDeliver = hasInvoice && isFullyPaid;
                           
-                          if (isBlocked) {
-                            // Show disabled button with lock icon when payment is not complete
+                          if (!hasInvoice) {
+                            // No invoice - show message to convert first
+                            return (
+                              <div className="relative group">
+                                <Button
+                                  data-testid={`deliver-no-invoice-${jc.job_card_number}`}
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={true}
+                                  className="bg-gray-100 text-gray-400 cursor-not-allowed"
+                                >
+                                  <Lock className="w-4 h-4 mr-1" /> No Invoice
+                                </Button>
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                                  Please convert to invoice first
+                                </div>
+                              </div>
+                            );
+                          } else if (!canDeliver) {
+                            // Has invoice but payment incomplete
                             const balanceDue = invoice?.balance_due || 0;
-                            const paymentStatus = invoice?.payment_status || 'unknown';
+                            const paymentStatus = invoice?.payment_status || 'unpaid';
                             return (
                               <div className="relative group">
                                 <Button
@@ -821,15 +840,14 @@ export default function JobCardsPage() {
                                   <Lock className="w-4 h-4 mr-1" /> Delivery Blocked
                                 </Button>
                                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                                  {paymentStatus === 'unpaid' && 'Delivery blocked: Invoice is unpaid'}
-                                  {paymentStatus === 'partial' && `Delivery blocked: Outstanding balance ${formatCurrency(balanceDue)}`}
-                                  {!invoice && 'Delivery blocked: Invoice not found'}
+                                  {paymentStatus === 'unpaid' && 'Payment required before delivery'}
+                                  {paymentStatus === 'partial' && `Balance due: ${formatCurrency(balanceDue)}`}
                                   <br />Full payment required before delivery
                                 </div>
                               </div>
                             );
                           } else {
-                            // Show enabled deliver button when fully paid
+                            // Invoice exists and fully paid - can deliver
                             return (
                               <Button
                                 data-testid={`deliver-${jc.job_card_number}`}
