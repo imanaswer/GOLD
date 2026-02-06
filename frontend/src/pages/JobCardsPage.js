@@ -396,9 +396,10 @@ export default function JobCardsPage() {
   };
 
    const handleConvertToInvoice = async (jobcard) => {
-    // CRITICAL: Client-side validation to prevent duplicate conversions
-    if (jobcard.is_invoiced) {
-      alert(`This job card has already been converted to an invoice (Invoice ID: ${jobcard.invoice_id || 'N/A'}). Please use the "View Invoice" button instead.`);
+    // FIX: Check if invoice already exists (not just the is_invoiced flag)
+    const existingInvoice = invoicesMap[jobcard.id];
+    if (existingInvoice) {
+      toast.error(`This job card already has an invoice: ${existingInvoice.invoice_number}. Use "View Invoice" to see it.`);
       return;
     }
     
