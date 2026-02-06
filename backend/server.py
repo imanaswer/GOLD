@@ -5052,6 +5052,27 @@ async def update_jobcard(jobcard_id: str, update_data: dict, current_user: User 
                 update_data["completed_at"] = datetime.now(timezone.utc)
         
         if status == "delivered" and old_status != "delivered":
+            # FIX: Add payment validation before allowing delivery
+            # Delivery can only happen if invoice exists AND is fully paid
+            invoice = await db.invoices.find_one({"jobcard_id": jobcard_id, "is_deleted": False})
+            if not invoice:
+                raise HTTPException(
+                    status_code=400, 
+                    detail="Cannot deliver job card without an invoice. Please convert to invoice first."
+                )
+            
+            # Convert Decimal128 to float for comparison
+            invoice_converted = decimal_to_float(invoice)
+            balance_due = invoice_converted.get("balance_due", 0)
+            payment_status = invoice_converted.get("payment_status", "unpaid")
+            is_fully_paid = payment_status == "paid" and balance_due == 0
+            
+            if not is_fully_paid:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Cannot deliver job card until invoice is fully paid. Balance due: {balance_due:.3f} OMR. Payment status: {payment_status}."
+                )
+            
             if not update_data.get("delivered_at") and not existing.get("delivered_at"):
                 update_data["delivered_at"] = datetime.now(timezone.utc)
         
