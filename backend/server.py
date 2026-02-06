@@ -5189,11 +5189,13 @@ async def convert_jobcard_to_invoice(jobcard_id: str, invoice_data: dict, curren
     if not jobcard:
         raise HTTPException(status_code=404, detail="Job card not found")
     
-    # CRITICAL: Prevent duplicate invoice conversion
-    if jobcard.get('is_invoiced', False):
+    # FIX: Check if actual invoice exists in DB (not just is_invoiced flag)
+    # This prevents circular dependency when flag is set but invoice doesn't exist
+    existing_invoice = await db.invoices.find_one({"jobcard_id": jobcard_id, "is_deleted": False}, {"_id": 0})
+    if existing_invoice:
         raise HTTPException(
             status_code=400, 
-            detail=f"This job card has already been converted to invoice. Invoice ID: {jobcard.get('invoice_id', 'N/A')}"
+            detail=f"This job card has already been converted to invoice {existing_invoice.get('invoice_number', 'N/A')}. Invoice ID: {existing_invoice.get('id', 'N/A')}"
         )
     
     # Use customer type from job card (or allow override from invoice_data)
