@@ -844,13 +844,15 @@ export default function JobCardsPage() {
                           }
                         })()}
                         
-                     {/* Convert to Invoice button - only for completed job cards that haven't been invoiced */}
-                        {jc.status === 'completed' && !jc.is_invoiced && (
+                     {/* Convert to Invoice button - FIX: Show for ANY completed job card to prevent circular dependency */}
+                        {jc.status === 'completed' && (
                           <Button
                             data-testid={`convert-${jc.job_card_number}`}
                             size="sm"
                             variant="outline"
                             onClick={() => handleConvertToInvoice(jc)}
+                            disabled={jc.is_invoiced && invoicesMap[jc.id]}
+                            title={jc.is_invoiced && invoicesMap[jc.id] ? 'Invoice already exists' : 'Convert this job card to an invoice'}
                           >
                             <FileText className="w-4 h-4 mr-1" /> Convert to Invoice
                           </Button>
