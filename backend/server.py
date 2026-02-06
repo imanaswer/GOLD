@@ -10825,9 +10825,30 @@ async def get_jobcard_deliver_impact(jobcard_id: str, current_user: User = Depen
     items = jobcard.get("items", [])
     total_weight = sum(item.get("weight_in", 0) for item in items)
     
-    # Check if job card has been converted to invoice
-    has_invoice = jobcard.get("is_invoiced", False)
-    invoice_id = jobcard.get("invoice_id", None)
+    # Check if invoice exists and get payment status
+    invoice = await db.invoices.find_one({"jobcard_id": jobcard_id, "is_deleted": False})
+    has_invoice = invoice is not None
+    invoice_id = invoice.get("id") if invoice else None
+    
+    # FIX: Check payment status - delivery blocked until fully paid
+    is_fully_paid = False
+    payment_status = None
+    balance_due = 0
+    if invoice:
+        invoice = decimal_to_float(invoice)
+        balance_due = invoice.get("balance_due", 0)
+        payment_status = invoice.get("payment_status", "unpaid")
+        is_fully_paid = payment_status == "paid" and balance_due == 0
+    
+    # FIX: Delivery can proceed ONLY if: completed status + invoice exists + fully paid
+    can_proceed = jobcard.get("status") == "completed" and has_invoice and is_fully_paid
+    
+    # Build blocking reason if cannot proceed
+    blocking_reason = None
+    if not has_invoice:
+        blocking_reason = "Invoice not found. Please convert job card to invoice first."
+    elif not is_fully_paid:
+        blocking_reason = f"Payment incomplete. Balance due: {balance_due:.3f} OMR. Full payment required before delivery."
     
     return {
         "action": "Deliver Job Card",
@@ -10835,10 +10856,14 @@ async def get_jobcard_deliver_impact(jobcard_id: str, current_user: User = Depen
         "total_weight": round(total_weight, 3),
         "status_change": f"{jobcard.get('status', 'created')} → delivered",
         "warning": "This action cannot be undone. The job card will be marked as delivered and cannot be edited.",
-        "can_proceed": jobcard.get("status") == "completed" and has_invoice,
+        "can_proceed": can_proceed,
         "has_invoice": has_invoice,
         "invoice_id": invoice_id,
-        "invoice_required": not has_invoice
+        "invoice_required": not has_invoice,
+        "payment_status": payment_status,
+        "balance_due": balance_due,
+        "is_fully_paid": is_fully_paid,
+        "blocking_reason": blocking_reason
     }
 
 @api_router.get("/jobcards/{jobcard_id}/delete-impact")
